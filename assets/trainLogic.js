@@ -18,7 +18,7 @@ var firebaseConfig = {
     appId: "1:306601074267:web:556e4050c3ece868"
   };
   
-  firebase.initializeApp(config);
+  firebase.initializeApp(firebaseConfig);
   
   var database = firebase.database();
   
@@ -63,45 +63,49 @@ var firebaseConfig = {
     console.log(childSnapshot.val());
   
     // Store everything into a variable.
-    var trnName = childSnapshot.val().name;
-    var trnDest = childSnapshot.val().destination;
-    var trnFirst = childSnapshot.val().first;
-    var trnFrequency = childSnapshot.val().frequency;
+    var fbName = childSnapshot.val().name;
+    var fbDest = childSnapshot.val().destination;
+    var fbFirst = childSnapshot.val().first;
+    var fbFrequency = childSnapshot.val().frequency;
     
   
     // Employee Info
-    console.log(trnName);
-    console.log(trnDest);
-    console.log(trnFirst);
-    console.log(trnFrequency);
+    console.log(fbName);
+    console.log(fbDest);
+    console.log(fbFirst);
+    console.log(fbFrequency);
   
-    // Calculate the months worked using hardcore math
-    // To calculate the months worked
-    var empMonths = moment().diff(moment(empStart, "X"), "months");
-    console.log(empMonths);
-  
-    // Calculate the total billed rate
-    var empBilled = empMonths * empRate;
-    console.log(empBilled);
-  
+    // Convert First Train Time
+    //var trnFirstPretty = moment.unix(trnFirst).format("HH:mm");
+    var trnFirstConverted = moment(fbFirst, "hh:mm");
+
+    //Retrieve the current time
+    //var current = moment();
+
+    //Calculate difference between times, in minues
+    var diffTime = moment().diff(moment(trnFirstConverted), "minutes");
+
+    //Calculate the time apart
+    var timeRemainder = diffTime % fbFrequency;
+
+    //Calculate minutes until next train
+    var timeMinutesToTrain = fbFrequency - timeRemainder;
+
+    //Calculate the next train time
+    var nextTrain = moment().add(timeMinutesToTrain, "minutes");
+    var catchTrain = moment(nextTrain).format("HH:mm");
+
     // Create the new row
     var newRow = $("<tr>").append(
-      $("<td>").text(empName),
-      $("<td>").text(empRole),
-      $("<td>").text(empStartPretty),
-      $("<td>").text(empMonths),
-      $("<td>").text(empRate),
-      $("<td>").text(empBilled)
+      $("<td>").text(fbName),
+      $("<td>").text(fbDest),
+      $("<td>").text(fbFrequency),
+      $("<td>").text(catchTrain),
+      $("<td>").text(timeMinutesToTrain)
     );
   
+    console.log(newRow);
     // Append the new row to the table
-    $("#employee-table > tbody").append(newRow);
+    $("#train-table tbody").append(newRow);
   });
   
-  // Example Time Math
-  // -----------------------------------------------------------------------------
-  // Assume Employee start date of January 1, 2015
-  // Assume current date is March 1, 2016
-  
-  // We know that this is 15 months.
-  // Now we will create code in moment.js to confirm that any attempt we use meets this test case
