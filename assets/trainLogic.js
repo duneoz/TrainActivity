@@ -77,7 +77,7 @@ var firebaseConfig = {
   
     // Convert First Train Time
     //var trnFirstPretty = moment.unix(trnFirst).format("HH:mm");
-    var trnFirstConverted = moment(fbFirst, "hh:mm");
+    var trnFirstConverted = moment(fbFirst, "hh:mm").subtract(1, "years");
 
     //Retrieve the current time
     //var current = moment();
